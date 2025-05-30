@@ -1,20 +1,9 @@
 from logging.config import fileConfig
-import sys
-import os
-from pathlib import Path
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-
-# Add project root to Python path so we can import models
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
-
-# Print debug info to see what's happening
-print(f"Project root: {project_root}")
-print(f"Python path: {sys.path}")
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -27,15 +16,9 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# Import your models - make sure all model classes are imported
-try:
-    from models import Base
-    target_metadata = Base.metadata
-    print(f"Successfully imported Base: {Base}")
-    print(f"Metadata tables: {Base.metadata.tables.keys()}")
-except ImportError as e:
-    print(f"Failed to import models: {e}")
-    target_metadata = None
+# from myapp import mymodel
+# target_metadata = mymodel.Base.metadata
+target_metadata = None
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -82,9 +65,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, 
-            target_metadata=target_metadata, 
-            render_as_batch=True,
+            connection=connection, target_metadata=target_metadata
         )
 
         with context.begin_transaction():
